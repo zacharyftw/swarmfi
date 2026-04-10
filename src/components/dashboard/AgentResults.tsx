@@ -4,6 +4,21 @@ import { motion } from "framer-motion";
 import { Sparkles, TrendingUp, ArrowRight } from "lucide-react";
 import type { AgentDecision } from "@/types";
 
+const protocolNames: Record<string, string> = {
+  "morpho-v1": "Morpho", "morpho-v2": "Morpho", "aave-v3": "Aave V3",
+  "yo-protocol": "YO Protocol", "pendle": "Pendle", "spark": "Spark",
+  "fluid": "Fluid", "euler-v2": "Euler", "ethena": "Ethena",
+  "etherfi": "Ether.fi", "maple": "Maple", "compound-v3": "Compound",
+  "neverland": "Neverland", "concrete": "Concrete", "kelp": "Kelp",
+  "kinetiq": "Kinetiq", "hyperlend": "HyperLend", "hypurrfi": "Hypurrfi",
+  "tokemak": "Tokemak", "upshift": "Upshift", "usdai": "USDAi",
+  "avon": "Avon", "felix-vanilla": "Felix",
+};
+
+function cleanProtocolName(slug: string): string {
+  return protocolNames[slug] || slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+}
+
 const agentLabels: Record<string, string> = {
   stable: "Stable Agent",
   conservative: "Conservative Agent",
@@ -93,7 +108,7 @@ export default function AgentResults({ decision }: AgentResultsProps) {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-foreground">
-                    {vault.protocol?.name || "Protocol"}
+                    {cleanProtocolName(vault.protocol?.name || "Protocol")}
                   </span>
                   <span
                     className={`text-xs font-medium px-2 py-0.5 rounded-full ${chainStyle.bg} ${chainStyle.text}`}
