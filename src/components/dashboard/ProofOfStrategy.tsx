@@ -4,6 +4,21 @@ import { motion } from "framer-motion";
 import { Brain, Terminal } from "lucide-react";
 import type { AgentDecision } from "@/types";
 
+const protocolNames: Record<string, string> = {
+  "morpho-v1": "Morpho", "morpho-v2": "Morpho", "aave-v3": "Aave V3",
+  "yo-protocol": "YO Protocol", "pendle": "Pendle", "spark": "Spark",
+  "fluid": "Fluid", "euler-v2": "Euler", "ethena": "Ethena",
+  "etherfi": "Ether.fi", "maple": "Maple", "compound-v3": "Compound",
+  "neverland": "Neverland", "concrete": "Concrete", "kelp": "Kelp",
+  "kinetiq": "Kinetiq", "hyperlend": "HyperLend", "hypurrfi": "Hypurrfi",
+  "tokemak": "Tokemak", "upshift": "Upshift", "usdai": "USDAi",
+  "avon": "Avon", "felix-vanilla": "Felix",
+};
+
+function cleanProtocolName(slug: string): string {
+  return protocolNames[slug] || slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+}
+
 const agentLabels: Record<string, string> = {
   stable: "Stable Agent",
   conservative: "Conservative Agent",
@@ -92,7 +107,7 @@ export default function ProofOfStrategy({ decisions = [] }: ProofOfStrategyProps
                       key={j}
                       className="text-xs px-2 py-0.5 rounded-full border border-primary/20 bg-primary/5 text-primary"
                     >
-                      {alloc.vault.protocol?.name || "Vault"}{" "}
+                      {cleanProtocolName(alloc.vault.protocol?.name || "Vault")}{" "}
                       {alloc.allocationPercent}%
                     </span>
                   ))}
