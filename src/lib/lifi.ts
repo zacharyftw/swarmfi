@@ -20,8 +20,8 @@ export async function fetchVaults(params?: {
   return res.json();
 }
 
-export async function fetchVaultDetail(network: string, address: string) {
-  const res = await fetch(`${EARN_BASE_URL}/v1/earn/vaults/${network}/${address}`);
+export async function fetchVaultDetail(chainId: number, address: string) {
+  const res = await fetch(`${EARN_BASE_URL}/v1/earn/vaults/${chainId}/${address}`);
   if (!res.ok) throw new Error(`Vault detail error: ${res.status}`);
   return res.json();
 }
@@ -52,11 +52,18 @@ export async function getComposerQuote(params: {
   fromAddress: string;
   toAddress: string;
   fromAmount: string;
+  slippage?: number;
 }) {
   const url = new URL(`${COMPOSER_BASE_URL}/v1/quote`);
-  Object.entries(params).forEach(([key, value]) => {
-    url.searchParams.set(key, String(value));
-  });
+  url.searchParams.set('fromChain', String(params.fromChain));
+  url.searchParams.set('toChain', String(params.toChain));
+  url.searchParams.set('fromToken', params.fromToken);
+  url.searchParams.set('toToken', params.toToken);
+  url.searchParams.set('fromAddress', params.fromAddress);
+  url.searchParams.set('toAddress', params.toAddress);
+  url.searchParams.set('fromAmount', params.fromAmount);
+  url.searchParams.set('slippage', String(params.slippage ?? 0.005));
+  url.searchParams.set('integrator', 'Mullet');
 
   const apiKey = process.env.LIFI_API_KEY;
   if (!apiKey) throw new Error('LIFI_API_KEY not set');
