@@ -31,7 +31,39 @@ function formatTvl(tvlStr: string): string {
 
 function formatApy(apy: number | null): string {
   if (apy === null || apy === undefined) return "\u2014";
-  return `${apy.toFixed(1)}%`;
+  if (apy >= 100) return `${apy.toFixed(0)}%`;
+  if (apy >= 10) return `${apy.toFixed(1)}%`;
+  return `${apy.toFixed(2)}%`;
+}
+
+const protocolNames: Record<string, string> = {
+  "morpho-v1": "Morpho",
+  "morpho-v2": "Morpho",
+  "aave-v3": "Aave V3",
+  "yo-protocol": "YO Protocol",
+  "pendle": "Pendle",
+  "spark": "Spark",
+  "fluid": "Fluid",
+  "euler-v2": "Euler",
+  "ethena": "Ethena",
+  "etherfi": "Ether.fi",
+  "maple": "Maple",
+  "compound-v3": "Compound",
+  "neverland": "Neverland",
+  "concrete": "Concrete",
+  "kelp": "Kelp",
+  "kinetiq": "Kinetiq",
+  "hyperlend": "HyperLend",
+  "hypurrfi": "Hypurrfi",
+  "tokemak": "Tokemak",
+  "upshift": "Upshift",
+  "usdai": "USDAi",
+  "avon": "Avon",
+  "felix-vanilla": "Felix",
+};
+
+function cleanProtocolName(slug: string): string {
+  return protocolNames[slug] || slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 }
 
 interface VaultCardProps {
@@ -81,7 +113,7 @@ export default function VaultCard({ vault, recommended, allocationPercent, onDep
 
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2.5">
-          <h4 className="font-semibold text-foreground">{protocol.name}</h4>
+          <h4 className="font-semibold text-foreground">{cleanProtocolName(protocol.name)}</h4>
           <span
             className={`text-xs font-medium px-2 py-0.5 rounded-full ${chainStyle.bg} ${chainStyle.text}`}
           >
@@ -125,7 +157,7 @@ export default function VaultCard({ vault, recommended, allocationPercent, onDep
             <div
               className="h-full rounded-full bg-gradient-to-r from-primary/60 to-primary transition-all duration-500"
               style={{
-                width: `${Math.min(100, Math.max(5, (analytics.apy7d || 0) * 2))}%`,
+                width: `${Math.min(100, Math.max(5, Math.log10((analytics.apy7d || 0.1) + 1) * 50))}%`,
               }}
             />
           </div>
