@@ -1,31 +1,56 @@
-// Vault from LI.FI Earn API
+// Vault from LI.FI Earn API — matches actual response shape
 export interface Vault {
-  address: string;
   name: string;
+  slug: string;
+  address: string;
   chainId: number;
+  network: string;
+  tags: string[];
+  lpTokens: string[];
   protocol: {
     name: string;
     url?: string;
   };
-  asset: {
+  provider: string;
+  syncedAt: string;
+  description?: string;
+  analytics: {
+    apy: {
+      base: number | null;
+      total: number | null;
+      reward: number | null;
+    };
+    tvl: {
+      usd: string; // NOTE: string not number per API
+    };
+    apy1d: number | null;
+    apy7d: number | null;
+    apy30d: number | null;
+    updatedAt: string;
+  };
+  redeemPacks: Array<{ name: string; stepsType: string }>;
+  depositPacks: Array<{ name: string; stepsType: string }>;
+  isRedeemable: boolean;
+  isTransactional: boolean;
+  underlyingTokens: Array<{
     symbol: string;
     address: string;
     decimals: number;
+  }>;
+}
+
+export interface VaultsResponse {
+  data: Vault[];
+  meta?: {
+    cursor?: string;
+    hasMore?: boolean;
   };
-  apy: {
-    base: number | null;
-    reward: number | null;
-    total: number | null;
-    apy7d: number | null;
-  };
-  analytics: {
-    tvl: {
-      usd: string; // NOTE: string not number per API docs
-    };
-  };
-  tags: string[];
-  isTransactional: boolean;
-  network: string;
+}
+
+export interface Chain {
+  chainId: number;
+  name: string;
+  networkCaip: string;
 }
 
 // Agent types

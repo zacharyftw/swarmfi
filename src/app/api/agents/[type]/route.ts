@@ -18,8 +18,8 @@ export async function POST(
     // Fetch vaults from Earn API
     const vaultData = await fetchVaults({ sortBy: 'apy' });
 
-    // Run the agent
-    const decision = await runAgent(type as AgentType, vaultData.vaults || vaultData);
+    // Run the agent — API returns { data: [...] }
+    const decision = await runAgent(type as AgentType, vaultData.data || vaultData);
 
     return NextResponse.json(decision);
   } catch (error: any) {

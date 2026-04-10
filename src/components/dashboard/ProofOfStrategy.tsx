@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Brain } from "lucide-react";
+import { Brain, Terminal } from "lucide-react";
 
 interface StrategyEntry {
   id: string;
@@ -46,6 +46,12 @@ const placeholderLogs: StrategyEntry[] = [
   },
 ];
 
+const agentColors: Record<string, string> = {
+  "Stable Agent": "text-green-400",
+  "Conservative Agent": "text-amber-400",
+  "Degen Agent": "text-red-400",
+};
+
 function formatTime(iso: string): string {
   const d = new Date(iso);
   return d.toLocaleTimeString("en-US", {
@@ -57,41 +63,48 @@ function formatTime(iso: string): string {
 
 export default function ProofOfStrategy() {
   return (
-    <div className="rounded-2xl border border-border bg-card p-6">
+    <div className="rounded-2xl border border-border bg-card p-6 overflow-hidden">
       <div className="flex items-center gap-2 mb-6">
         <Brain className="h-5 w-5 text-primary" />
         <h3 className="text-lg font-semibold text-foreground">
           Agent Brain &mdash; Strategy Log
         </h3>
+        <Terminal className="h-4 w-4 text-muted ml-auto" />
       </div>
 
-      <div className="space-y-4 max-h-[420px] overflow-y-auto pr-2">
-        {placeholderLogs.map((entry, i) => (
-          <motion.div
-            key={entry.id}
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="border-l-2 border-border pl-4 pb-2"
-          >
-            <div className="flex items-center gap-3 mb-1.5">
-              <span className="text-xs font-mono text-muted">
-                {formatTime(entry.timestamp)}
-              </span>
-              <span className="text-xs font-medium text-primary">
-                {entry.agent}
-              </span>
-            </div>
+      {/* Terminal-style container */}
+      <div className="rounded-xl bg-background/80 border border-border p-4 max-h-[420px] overflow-y-auto">
+        <div className="space-y-4">
+          {placeholderLogs.map((entry, i) => (
+            <motion.div
+              key={entry.id}
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="border-l-2 border-border pl-4 pb-2 hover:border-primary/50 transition-colors duration-300"
+            >
+              <div className="flex items-center gap-3 mb-1.5">
+                <span className="text-xs font-mono text-muted/60">
+                  {formatTime(entry.timestamp)}
+                </span>
+                <span
+                  className={`text-xs font-semibold ${agentColors[entry.agent] || "text-primary"}`}
+                >
+                  {entry.agent}
+                </span>
+              </div>
 
-            <p className="text-sm font-medium text-foreground mb-1">
-              {entry.action}
-            </p>
+              <p className="text-sm font-medium text-foreground mb-1.5">
+                {entry.action}
+              </p>
 
-            <p className="text-xs font-mono leading-relaxed text-muted/80 bg-background/50 rounded-lg px-3 py-2">
-              {entry.reasoning}
-            </p>
-          </motion.div>
-        ))}
+              <p className="text-xs font-mono leading-relaxed text-muted/70 bg-card/50 rounded-lg px-3 py-2 border border-border/50">
+                {entry.reasoning}
+                <span className="inline-block w-1.5 h-3.5 bg-primary ml-1 align-middle animate-blink" />
+              </p>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );
