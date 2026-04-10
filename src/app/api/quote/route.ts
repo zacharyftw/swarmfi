@@ -12,6 +12,7 @@ export async function GET(req: NextRequest) {
     const fromAddress = searchParams.get('fromAddress');
     const toAddress = searchParams.get('toAddress');
     const fromAmount = searchParams.get('fromAmount');
+    const slippage = searchParams.get('slippage');
 
     if (!fromChain || !toChain || !fromToken || !toToken || !fromAddress || !toAddress || !fromAmount) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
@@ -25,6 +26,7 @@ export async function GET(req: NextRequest) {
       fromAddress,
       toAddress,
       fromAmount,
+      slippage: slippage ? Number(slippage) : undefined,
     });
 
     return NextResponse.json(quote);
