@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
+import { useCountUp } from "@/hooks/useCountUp";
 
 interface AgentCardProps {
   name: string;
@@ -32,6 +33,8 @@ export default function AgentCard({
   onSelect,
   onRun,
 }: AgentCardProps) {
+  const animApy = useCountUp(apy ?? 0, 1500, 1);
+
   return (
     <motion.div
       whileHover={{ y: -1 }}
@@ -59,7 +62,7 @@ export default function AgentCard({
             APY
           </p>
           <p className="text-2xl font-bold text-foreground tabular-nums">
-            {apy !== null ? `${apy.toFixed(1)}%` : "---"}
+            {apy !== null ? `${animApy.toFixed(1)}%` : <span className="inline-block w-12 h-7 rounded animate-shimmer" />}
           </p>
           {riskScore != null && (
             <p className="text-xs text-muted mt-1 font-mono">
