@@ -1,26 +1,15 @@
 "use client";
 
+import { useAccount } from "wagmi";
+import { usePortfolio } from "@/hooks/usePortfolio";
+
 interface Allocation {
   label: string;
   percentage: number;
   color: string;
 }
 
-const chainAllocations: Allocation[] = [
-  { label: "Ethereum", percentage: 35, color: "bg-foreground" },
-  { label: "Arbitrum", percentage: 25, color: "bg-foreground/60" },
-  { label: "Optimism", percentage: 15, color: "bg-foreground/40" },
-  { label: "Base", percentage: 15, color: "bg-foreground/25" },
-  { label: "Polygon", percentage: 10, color: "bg-foreground/15" },
-];
-
-const assetAllocations: Allocation[] = [
-  { label: "USDC", percentage: 30, color: "bg-foreground" },
-  { label: "ETH / stETH", percentage: 28, color: "bg-foreground/60" },
-  { label: "WBTC", percentage: 15, color: "bg-foreground/40" },
-  { label: "DAI / sDAI", percentage: 12, color: "bg-foreground/25" },
-  { label: "LP Positions", percentage: 15, color: "bg-foreground/15" },
-];
+const opacityScale = ["bg-foreground", "bg-foreground/60", "bg-foreground/40", "bg-foreground/25", "bg-foreground/15"];
 
 function SegmentedBar({ allocations }: { allocations: Allocation[] }) {
   return (
@@ -54,7 +43,8 @@ function Legend({ allocations }: { allocations: Allocation[] }) {
 }
 
 export default function PortfolioBreakdown() {
-  const isConnected = true;
+  const { address, isConnected } = useAccount();
+  const { positions, isLoading } = usePortfolio(address);
 
   if (!isConnected) {
     return (
@@ -66,6 +56,51 @@ export default function PortfolioBreakdown() {
       </div>
     );
   }
+
+  if (isLoading) {
+    return (
+      <div className="rounded-lg border border-border bg-white p-6 flex flex-col items-center justify-center min-h-[300px]">
+        <p className="text-muted text-sm">Loading portfolio...</p>
+      </div>
+    );
+  }
+
+  if (positions.length === 0) {
+    return (
+      <div className="rounded-lg border border-border bg-white p-6 flex flex-col items-center justify-center min-h-[300px]">
+        <p className="text-muted text-sm mb-2">No active positions</p>
+        <p className="text-muted/60 text-xs">
+          Deposit into a vault to see your portfolio here
+        </p>
+      </div>
+    );
+  }
+
+  const totalUsd = positions.reduce((sum, p) => sum + parseFloat(p.balanceUsd || "0"), 0);
+
+  const chainTotals: Record<string, number> = {};
+  const assetTotals: Record<string, number> = {};
+
+  for (const pos of positions) {
+    const usd = parseFloat(pos.balanceUsd || "0");
+    const chain = pos.vault.network || "Unknown";
+    const asset = pos.vault.underlyingTokens?.map(t => t.symbol).join(" / ") || pos.vault.name || "Unknown";
+    chainTotals[chain] = (chainTotals[chain] || 0) + usd;
+    assetTotals[asset] = (assetTotals[asset] || 0) + usd;
+  }
+
+  function toAllocations(totals: Record<string, number>): Allocation[] {
+    return Object.entries(totals)
+      .sort((a, b) => b[1] - a[1])
+      .map(([label, usd], i) => ({
+        label,
+        percentage: totalUsd > 0 ? Math.round((usd / totalUsd) * 100) : 0,
+        color: opacityScale[i] || opacityScale[opacityScale.length - 1],
+      }));
+  }
+
+  const chainAllocations = toAllocations(chainTotals);
+  const assetAllocations = toAllocations(assetTotals);
 
   return (
     <div className="rounded-lg border border-border bg-white p-6">
@@ -93,9 +128,9 @@ export default function PortfolioBreakdown() {
 
       {/* Total value */}
       <div className="mt-6 pt-4 border-t border-border flex items-center justify-between">
-        <span className="text-sm text-muted">Total Value Locked</span>
+        <span className="text-sm text-muted">Total Value</span>
         <span className="text-xl font-bold text-foreground tabular-nums">
-          $124,832.47
+          ${totalUsd.toLocaleString(undefined, { maximumFractionDigits: 2 })}
         </span>
       </div>
     </div>

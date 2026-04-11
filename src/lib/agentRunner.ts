@@ -52,17 +52,35 @@ export async function runAgent(
   const jsonMatch = responseText.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('Agent did not return valid JSON');
 
-  const decision = JSON.parse(jsonMatch[0]);
+  let decision;
+  try {
+    decision = JSON.parse(jsonMatch[0]);
+  } catch {
+    throw new Error('Agent returned malformed JSON');
+  }
+
+  if (!decision.allocations || !Array.isArray(decision.allocations)) {
+    throw new Error('Agent response missing allocations array');
+  }
+
+  // Only include vaults that actually exist in our data
+  const selectedVaults = decision.allocations
+    .map((a: any) => {
+      const vault = transactionalVaults.find(v => v.address === a.vaultAddress);
+      if (!vault) return null;
+      return {
+        vault,
+        allocationPercent: a.percent,
+        reason: a.reason,
+      };
+    })
+    .filter(Boolean);
 
   return {
     agent: agentType,
     timestamp: new Date().toISOString(),
-    selectedVaults: decision.allocations.map((a: any) => ({
-      vault: transactionalVaults.find(v => v.address === a.vaultAddress) || { address: a.vaultAddress },
-      allocationPercent: a.percent,
-      reason: a.reason,
-    })),
-    reasoning: decision.reasoning,
-    riskScore: decision.riskScore,
+    selectedVaults,
+    reasoning: decision.reasoning || '',
+    riskScore: decision.riskScore ?? 5,
   };
 }

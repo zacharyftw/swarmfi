@@ -20,7 +20,7 @@ import "@rainbow-me/rainbowkit/styles.css";
 
 const config = getDefaultConfig({
   appName: "Yield Mullet",
-  projectId: "YIELD_MULLET_WC",
+  projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID || "",
   chains: [mainnet, arbitrum, optimism, polygon, base, avalanche],
   ssr: false,
 });

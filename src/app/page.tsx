@@ -269,7 +269,7 @@ export default function Home() {
             aggregation on Starknet &amp; EVM chains.
           </p>
           <a
-            href="https://github.com"
+            href="https://github.com/zacharyftw/yield-mullet"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-xs text-muted/60 hover:text-primary transition-colors duration-200"
