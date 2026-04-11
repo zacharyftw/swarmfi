@@ -12,6 +12,10 @@ export const chainColors: Record<string, { bg: string; text: string }> = {
   Sonic: { bg: "bg-indigo-400/10", text: "text-indigo-400" },
   Mantle: { bg: "bg-gray-400/10", text: "text-gray-400" },
   Berachain: { bg: "bg-orange-400/10", text: "text-orange-400" },
+  Celo: { bg: "bg-lime-400/10", text: "text-lime-400" },
+  Katana: { bg: "bg-rose-400/10", text: "text-rose-400" },
+  Monad: { bg: "bg-violet-400/10", text: "text-violet-400" },
+  Unichain: { bg: "bg-pink-400/10", text: "text-pink-400" },
 };
 
 export const defaultChainColor = { bg: "bg-gray-400/10", text: "text-gray-400" };
