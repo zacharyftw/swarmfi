@@ -11,6 +11,7 @@ import AgentResults from "@/components/dashboard/AgentResults";
 import PortfolioBreakdown from "@/components/dashboard/PortfolioBreakdown";
 import { useVaults } from "@/hooks/useVaults";
 import { useAgent } from "@/hooks/useAgent";
+import { useCountUp } from "@/hooks/useCountUp";
 import type { Vault, AgentDecision, AgentType } from "@/types";
 
 const agents = [
@@ -63,6 +64,11 @@ export default function Home() {
       protocols: protocols.size,
     };
   }, [vaults]);
+
+  // Animated stat counters
+  const animVaults = useCountUp(liveStats.vaults);
+  const animChains = useCountUp(liveStats.chains);
+  const animProtocols = useCountUp(liveStats.protocols);
 
   // Compute median APY per risk tier from real vault data
   const agentApys = useMemo(() => {
@@ -152,13 +158,15 @@ export default function Home() {
               className="mt-14 flex items-center justify-center gap-12 sm:gap-16"
             >
               {[
-                { label: "Vaults Tracked", value: liveStats.vaults > 0 ? `${liveStats.vaults}` : "—" },
-                { label: "Chains", value: liveStats.chains > 0 ? `${liveStats.chains}` : "—" },
-                { label: "Protocols", value: liveStats.protocols > 0 ? `${liveStats.protocols}` : "—" },
+                { label: "Vaults Tracked", value: animVaults, loaded: liveStats.vaults > 0 },
+                { label: "Chains", value: animChains, loaded: liveStats.chains > 0 },
+                { label: "Protocols", value: animProtocols, loaded: liveStats.protocols > 0 },
               ].map((stat) => (
                 <div key={stat.label} className="flex flex-col items-center gap-1">
                   <span className="text-3xl font-bold text-foreground tabular-nums">
-                    {stat.value}
+                    {stat.loaded ? stat.value : (
+                      <span className="inline-block w-10 h-9 rounded animate-shimmer" />
+                    )}
                   </span>
                   <span className="text-xs text-muted font-mono">{stat.label}</span>
                 </div>
