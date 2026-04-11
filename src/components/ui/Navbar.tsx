@@ -5,9 +5,9 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useTheme } from "@/hooks/useTheme";
 
 const navLinks = [
-  { label: "Strategy", href: "#strategy" },
+  { label: "Strategy", href: "/#strategy" },
   { label: "Vaults", href: "/vaults" },
-  { label: "Dashboard", href: "#dashboard" },
+  { label: "Dashboard", href: "/#dashboard" },
 ];
 
 export default function Navbar() {
