@@ -45,7 +45,8 @@ export async function fetchVaults(params?: {
 export async function fetchPortfolio(userAddress: string): Promise<PortfolioPosition[]> {
   const res = await fetch(`${EARN_BASE_URL}/v1/earn/portfolio/${userAddress}/positions`);
   if (!res.ok) throw new Error(`Portfolio error: ${res.status}`);
-  return res.json() as Promise<PortfolioPosition[]>;
+  const json = await res.json();
+  return Array.isArray(json) ? json : (json.data ?? json.positions ?? []);
 }
 
 export async function getComposerQuote(params: {
