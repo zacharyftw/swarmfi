@@ -10,7 +10,8 @@ export function usePortfolio(address: string | undefined) {
       if (!address) return [];
       const res = await fetch(`/api/portfolio/${address}`);
       if (!res.ok) throw new Error(`Failed to fetch portfolio: ${res.status}`);
-      return res.json();
+      const json = await res.json();
+      return Array.isArray(json) ? json : (json.data ?? json.positions ?? []);
     },
     enabled: !!address,
     staleTime: 30_000,
