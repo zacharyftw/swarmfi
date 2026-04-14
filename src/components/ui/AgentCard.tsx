@@ -33,7 +33,7 @@ export default function AgentCard({
   onSelect,
   onRun,
 }: AgentCardProps) {
-  const animApy = useCountUp(apy ?? 0, 1500, 1);
+  const animApy = useCountUp(apy ?? 0, 1500, 1, 1200);
 
   return (
     <motion.div
