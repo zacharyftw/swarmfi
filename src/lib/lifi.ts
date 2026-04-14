@@ -67,7 +67,7 @@ export async function getComposerQuote(params: {
   url.searchParams.set('fromAddress', params.fromAddress);
   url.searchParams.set('toAddress', params.toAddress);
   url.searchParams.set('fromAmount', params.fromAmount);
-  url.searchParams.set('slippage', String(params.slippage ?? 0.005));
+  url.searchParams.set('slippage', String(params.slippage ?? 0.02));
   url.searchParams.set('integrator', 'Mullet');
 
   const apiKey = process.env.LIFI_API_KEY;
