@@ -6,7 +6,7 @@ const RESPONSE_FORMAT = `Respond with ONLY valid JSON:
     { "vaultAddress": "0x...", "percent": 60, "reason": "..." }
   ],
   "reasoning": "Overall strategy explanation...",
-  "riskScore": 2
+  "riskScore": <1-10, where 1=safest and 10=riskiest — score based on your actual allocation>
 }`;
 
 export const AGENT_CONFIGS: Record<AgentType, AgentConfig> = {
