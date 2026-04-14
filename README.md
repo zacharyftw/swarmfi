@@ -19,7 +19,7 @@ Built during the [DeFi Mullet Hackathon #1](https://github.com/brucexu-eth/defi-
 
 ## The agent logic
 
-Each agent is a system prompt fed to Llama 3.3 70B (via Groq) with real vault data as context. They return structured JSON with vault picks, allocation percentages, and reasoning. The agents don't move money — they recommend, you approve.
+Each agent is a system prompt fed to Llama 3.3 70B (via Groq) with real-time vault data as context. They return structured JSON with vault picks, allocation percentages, and reasoning. The agents don't move money — they recommend, you approve.
 
 The scoring considers:
 - Raw APY vs 7-day average APY (is it sustainable?)
